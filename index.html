@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblia Completa + IA</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#0f0f0f;color:#fff;padding:16px}
+header{text-align:center;padding:18px 0;border-bottom:2px solid #ffe600;margin-bottom:16px}
+.box{background:#1a1a1a;border:1px solid #333;border-radius:16px;padding:16px;margin-top:14px}
+.box h2{font-size:14px;color:#ffe600;margin-bottom:8px}
+input,textarea{width:100%;margin-top:8px;padding:13px;border-radius:12px;border:none;background:#111;color:#fff;font-size:14px}
+button{width:100%;margin-top:12px;padding:14px;border-radius:99px;border:none;background:#ffe600;color:#111;font-weight:900;cursor:pointer}
+.btn-voz{background:#7c4dff;color:#fff;margin-top:8px}
+.card{background:#222;border-radius:14px;padding:16px;margin-top:12px;border:1px solid #444}
+.card p{font-size:15px;line-height:1.6}
+.card small{color:#ffe600;font-weight:800}
+</style>
+</head>
+<body>
+<header><h1>✝️ Biblia Completa + IA</h1></header>
+
+<div class="box">
+<h2>📖 BUSCAR EN TODA LA BIBLIA</h2>
+<input id="cita" placeholder="Ej: Juan 3:16 o Salmos 91:1 o Filipenses 4:13">
+<button onclick="buscarCita()">BUSCAR CITA</button>
+<div id="resultadoCita"></div>
+</div>
+
+<div class="box">
+<h2>🤖 PEDIR CONSEJO A LA IA</h2>
+<input id="apiKey" type="password" placeholder="Tu clave Gemini">
+<textarea id="consulta" placeholder="Ej: estoy con problemas económicos..."></textarea>
+<button onclick="buscarConIA()">PEDIR A LA IA</button>
+<div id="resultadosIA"></div>
+</div>
+
+<script>
+const CLAVE_INICIAL = "AQ.Ab8RN6I0SRH3FZ3gtTmwv2kqGAefqIHvfDvv3m6qLK9Nk4NDkg";
+document.getElementById('apiKey').value = localStorage.getItem('geminiKey') || CLAVE_INICIAL;
+document.getElementById('apiKey').addEventListener('change', e=> localStorage.setItem('geminiKey', e.target.value.trim()));
+
+// Mapa de libros en español -> código para la API
+const LIBROS = {
+"genesis":"GEN","exodo":"EXO","levitico":"LEV","numeros":"NUM","deuteronomio":"DEU",
+"josue":"JOS","jueces":"JDG","rut":"RUT","1 samuel":"1SA","2 samuel":"2SA","1 reyes":"1KI","2 reyes":"2KI",
+"1 cronicas":"1CH","2 cronicas":"2CH","esdras":"EZR","nehemias":"NEH","ester":"EST","job":"JOB",
+"salmos":"PSA","salmo":"PSA","proverbios":"PRO","eclesiastes":"ECC","cantares":"SNG","isaias":"ISA",
+"jeremias":"JER","lamentaciones":"LAM","ezequiel":"EZK","daniel":"DAN","oseas":"HOS","joel":"JOL",
+"amos":"AMO","abdias":"OBA","jonas":"JON","miqueas":"MIC","nahum":"NAM","habacuc":"HAB",
+"sofonias":"ZEP","hageo":"HAG","zacarias":"ZEC","malaquias":"MAL","mateo":"MAT","marcos":"MRK",
+"lucas":"LUK","juan":"JHN","hechos":"ACT","romanos":"ROM","1 corintios":"1CO","2 corintios":"2CO",
+"galatas":"GAL","efesios":"EPH","filipenses":"PHP","colosenses":"COL","1 tesalonicenses":"1TH",
+"2 tesalonicenses":"2TH","1 timoteo":"1TI","2 timoteo":"2TI","tito":"TIT","filemon":"PHM",
+"hebreos":"HEB","santiago":"JAS","1 pedro":"1PE","2 pedro":"2PE","1 juan":"1JN","2 juan":"2JN",
+"3 juan":"3JN","judas":"JUD","apocalipsis":"REV"
+};
+
+function normalizar(t){
+  return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
+}
+
+async function buscarCita(){
+  let raw = document.getElementById('cita').value.trim();
+  if(!raw){ alert('Escribí una cita, ej: Juan 3:16'); return; }
+  let match = raw.match(/(.+?)\s*(\d+):(\d+)/);
+  if(!match){ alert('Formato correcto: Libro Capítulo:Versículo. Ej: Salmos 23:1'); return; }
+
+  let libroTxt = normalizar(match[1]);
+  let cap = match[2];
+  let ver = match[3];
+  let codigo = LIBROS[libroTxt];
+
+  // probar si empieza con 1,2,3
+  if(!codigo){
+    let partes = libroTxt.split(' ');
+    if(partes.length>1){
+      let intento = partes[0]+" "+partes.slice(1).join(' ');
+      codigo = LIBROS[intento];
+    }
+  }
+
+  if(!codigo){ document.getElementById('resultadoCita').innerHTML = '<div class="card"><p>No encontré el libro "'+match[1]+'". Probá con: Juan, Salmos, Romanos, Genesis...</p></div>'; return; }
+
+  document.getElementById('resultadoCita').innerHTML = '<p>Cargando...</p>';
+  try{
+    // API gratuita con Reina Valera
+    let url = `https://bolls.life/get-text/${codigo}/${cap}/${ver}/?translation=rvr1960`;
+    let resp = await fetch(url);
+    let data = await resp.json();
+    if(!data || data.length===0) throw new Error('vacio');
+    let v = data[0];
+    let textoLimpio = v.text? v.text.replace(/<[^>]*>/g,'') : v.verse || 'No encontrado';
+
+    document.getElementById('resultadoCita').innerHTML = `
+      <div class="card">
+        <small>${v.book_name || match[1]} ${cap}:${ver} - Reina Valera 1960</small>
+        <p style="margin-top:8px">"${textoLimpio}"</p>
+        <button class="btn-voz" onclick="hablarSuave('${textoLimpio.replace(/'/g,"")}', '${cap}:${ver}')">🔊 ESCUCHAR</button>
+        <button onclick="compartir('${cap}:${ver}','${textoLimpio.replace(/'/g,"")}')">COMPARTIR POR WHATSAPP</button>
+      </div>`;
+  }catch(e){
+    document.getElementById('resultadoCita').innerHTML = '<div class="card"><p>No se pudo traer esa cita. Revisá que esté bien escrita y que tengas internet.</p></div>';
+  }
+}
+
+function hablarSuave(texto, ref){
+  speechSynthesis.cancel();
+  let u = new SpeechSynthesisUtterance(`${ref}. ${texto}`);
+  u.lang='es-AR';
+  u.rate=0.85;
+  u.pitch=0.9;
+  speechSynthesis.speak(u);
+}
+function compartir(ref,texto){
+  window.open('https://wa.me/?text='+encodeURIComponent(ref+": "+texto),'_blank');
+}
+
+async function buscarConIA(){
+  let consulta = document.getElementById('consulta').value.trim();
+  let key = document.getElementById('apiKey').value.trim();
+  if(!consulta){ alert('Escribime cómo te sentís'); return; }
+  document.getElementById('resultadosIA').innerHTML = '<p>Buscando...</p>';
+  let prompt = `Actúa como pastor. Persona dice: "${consulta}". Recomienda 3 versículos Reina Valera. Devuelve SOLO JSON: [{"ref":"Juan 3:16","texto":"...","tema":"ESPERANZA"}]`;
+  try{
+    let resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({contents:[{parts:[{text: prompt}]}]})
+    });
+    let data = await resp.json();
+    let texto = data?.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
+    texto = texto.replace(/```json/g,'').replace(/```/g,'').trim();
+    let versiculos = JSON.parse(texto);
+    let html='';
+    versiculos.forEach(v=>{
+      html+=`<div class="card"><small>${v.tema}</small><p><b>${v.ref}</b>: "${v.texto}"</p><button class="btn-voz" onclick="hablarSuave('${v.texto.replace(/'/g,"")}', '${v.ref}')">🔊 ESCUCHAR</button></div>`;
+    });
+    document.getElementById('resultadosIA').innerHTML = html;
+  }catch(e){
+    document.getElementById('resultadosIA').innerHTML = '<div class="card"><p>Falló la IA. Revisá tu clave.</p></div>';
+  }
+}
+</script>
+</body>
+  </html>
