@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Biblia Definitiva</title>
+<title>Biblia PRO MAX</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0b0b0b;color:#e8e0c9;font-family:Georgia,serif}
@@ -34,7 +34,7 @@ button.grande{width:100%;margin-top:10px;padding:14px;border-radius:10px;border:
 .card small{color:#f5d76e;font-weight:800}
 .card p{margin-top:6px;line-height:1.6}
 .card button{margin-top:8px;padding:10px;border-radius:99px;border:none;background:#f5d76e;font-weight:700;width:100%;cursor:pointer}
-.chat{max-height:300px;overflow-y:auto;background:#111;border-radius:12px;padding:10px;margin-top:10px;border:1px solid #333}
+.chat{max-height:320px;overflow-y:auto;background:#111;border-radius:12px;padding:10px;margin-top:10px;border:1px solid #333}
 .msg{padding:10px;border-radius:12px;margin-bottom:8px;line-height:1.5}
 .msg.user{background:#2a2a2a;text-align:right}
 .msg.ia{background:#3a3320;border-left:3px solid #f5d76e}
@@ -46,18 +46,18 @@ audio{width:100%;margin-top:12px}
 </head>
 <body>
 <header>
-<h1>📖 BIBLIA DEFINITIVA</h1>
+<h1>📖 BIBLIA PRO MAX</h1>
 <div class="menu">
 <button class="active" onclick="mostrar('leer')">📖 Leer</button>
-<button onclick="mostrar('ia')">🤖 IA Contextual</button>
+<button onclick="mostrar('ia')">🤖 IA</button>
 <button onclick="mostrar('fav')">⭐ Favoritos</button>
 </div>
 </header>
 
 <div id="sec-leer" class="seccion activa">
 <div id="descargaBox">
-<b id="estadoDescarga">📥 Descargá toda la Biblia (texto + audio)</b>
-<p style="font-size:13px;margin-top:6px;color:#ccc">1 sola vez. Después anda sin internet.</p>
+<b id="estadoDescarga">📥 Descargar TODA la Biblia de una vez (1 archivo, ~10 seg)</b>
+<p style="font-size:13px;margin-top:6px;color:#ccc">Después anda sin internet. Sin clave.</p>
 <button onclick="descargarBiblia()">DESCARGAR BIBLIA COMPLETA</button>
 <div id="barra"><div id="barraLlena"></div></div>
 <small id="progreso"></small>
@@ -65,27 +65,21 @@ audio{width:100%;margin-top:12px}
 
 <input id="buscarInput" placeholder="Buscar cita: Juan 3:16">
 <button class="grande" onclick="buscarCita()">🔍 BUSCAR CITA</button>
-<input id="buscarPalabra" placeholder="Buscar palabra: paz, amor, fe...">
+<input id="buscarPalabra" placeholder="Buscar palabra en toda la Biblia: paz, amor...">
 <button class="grande" style="background:#333;color:#f5d76e" onclick="buscarPalabra()">BUSCAR PALABRA</button>
 
-<select id="libroSel" onchange="cargarCaps()"></select>
+<select id="libroSel" onchange="cargarCap()"></select>
 <select id="capSel" onchange="cargarCap()"></select>
-<div style="display:flex;gap:8px;margin-top:8px">
-<button style="flex:1;padding:10px;border-radius:10px;border:1px solid #444;background:#1a1a1a;color:#fff" onclick="cambiarLetra(1)">A+</button>
-<button style="flex:1;padding:10px;border-radius:10px;border:1px solid #444;background:#1a1a1a;color:#fff" onclick="cambiarLetra(-1)">A-</button>
-<button style="flex:1;padding:10px;border-radius:10px;border:1px solid #444;background:#1a1a1a;color:#fff" onclick="verDelDia()">✨ Del Día</button>
-</div>
-<div id="libro" style="margin-top:12px"><p style="text-align:center;color:#888;padding:20px">Primero descargá la Biblia</p></div>
+<div id="libro" style="margin-top:12px"><p style="text-align:center;color:#888;padding:20px">Tocá DESCARGAR BIBLIA COMPLETA</p></div>
 </div>
 
 <div id="sec-ia" class="seccion">
 <div class="card">
-<small>🤖 IA CONTEXTUAL - Entiende tu situación</small>
-<p style="font-size:13px;margin-top:6px">Hablame como a un pastor. Recuerda lo anterior. Sin clave, busca en tu Biblia descargada.</p>
-<div id="chatIA" class="chat"><div class="msg ia">Hola, soy tu consejero bíblico. Contame, ¿cómo estás hoy?</div></div>
-<textarea id="consultaIA" rows="2" placeholder="Ej: no duermo por la ansiedad..."></textarea>
-<button class="grande" onclick="pedirIA()">ENVIAR A LA IA</button>
-<button class="grande" style="background:#333;color:#fff" onclick="limpiarChat()">Limpiar conversación</button>
+<small>🤖 IA CONTEXTUAL - Busca en tu Biblia descargada</small>
+<div id="chatIA" class="chat"><div class="msg ia">Hola, contame cómo estás. Te busco versículos de verdad.</div></div>
+<textarea id="consultaIA" rows="2" placeholder="Ej: no duermo, tengo miedo..."></textarea>
+<button class="grande" onclick="pedirIA()">ENVIAR</button>
+<button class="grande" style="background:#333;color:#fff" onclick="limpiarChat()">Limpiar chat</button>
 </div>
 </div>
 
@@ -105,40 +99,19 @@ audio{width:100%;margin-top:12px}
 </div>
 
 <script>
-const LIBROS = [
-["Génesis","GEN",50],["Éxodo","EXO",40],["Levítico","LEV",27],["Números","NUM",36],["Deuteronomio","DEU",34],
-["Josué","JOS",24],["Jueces","JDG",21],["Rut","RUT",4],["1 Samuel","1SA",31],["2 Samuel","2SA",24],
-["1 Reyes","1KI",22],["2 Reyes","2KI",25],["1 Crónicas","1CH",29],["2 Crónicas","2CH",36],["Esdras","EZR",10],
-["Nehemías","NEH",13],["Ester","EST",10],["Job","JOB",42],["Salmos","PSA",150],["Proverbios","PRO",31],
-["Eclesiastés","ECC",12],["Cantares","SNG",8],["Isaías","ISA",66],["Jeremías","JER",52],["Lamentaciones","LAM",5],
-["Ezequiel","EZK",48],["Daniel","DAN",12],["Oseas","HOS",14],["Joel","JOL",3],["Amós","AMO",9],
-["Abdías","OBA",1],["Jonás","JON",4],["Miqueas","MIC",7],["Nahum","NAM",3],["Habacuc","HAB",3],
-["Sofonías","ZEP",3],["Hageo","HAG",2],["Zacarías","ZEC",14],["Malaquías","MAL",4],["Mateo","MAT",28],
-["Marcos","MRK",16],["Lucas","LUK",24],["Juan","JHN",21],["Hechos","ACT",28],["Romanos","ROM",16],
-["1 Corintios","1CO",16],["2 Corintios","2CO",13],["Gálatas","GAL",6],["Efesios","EPH",6],["Filipenses","PHP",4],
-["Colosenses","COL",4],["1 Tesalonicenses","1TH",5],["2 Tesalonicenses","2TH",3],["1 Timoteo","1TI",6],
-["2 Timoteo","2TI",4],["Tito","TIT",3],["Filemón","PHM",1],["Hebreos","HEB",13],["Santiago","JAS",5],
-["1 Pedro","1PE",5],["2 Pedro","2PE",5],["1 Juan","1JN",5],["2 Juan","2JN",1],["3 Juan","3JN",1],
-["Judas","JUD",1],["Apocalipsis","REV",22]
-];
+let estructuraLibros=[]; // [{nombre, caps:[1..150]}]
+let todosLosVersiculos=[]; // [{book, chapter, verse, texto, ref}]
+let currentVerses=[], seleccionado=null, tamLetra=18;
+let favs=JSON.parse(localStorage.getItem('favMax')||'[]');
+let resaltados=new Set(JSON.parse(localStorage.getItem('resMax')||'[]'));
+let historial=JSON.parse(localStorage.getItem('chatMax')||'[]');
 
 let libroSel=document.getElementById('libroSel'), capSel=document.getElementById('capSel');
-let favs=JSON.parse(localStorage.getItem('favDef')||'[]');
-let resaltados=new Set(JSON.parse(localStorage.getItem('resDef')||'[]'));
-let currentVerses=[], currentMeta={};
-let seleccionado=null, tamLetra=18;
-let bibliaDescargada=localStorage.getItem('bibliaOK')==='1';
-let todosLosVersiculos=[];
-let historial = JSON.parse(localStorage.getItem('chatCtx')||'[]');
-
-LIBROS.forEach((l,i)=>{let o=document.createElement('option');o.value=i;o.textContent=l[0];libroSel.appendChild(o)});
-cargarCaps();
-if(bibliaDescargada){document.getElementById('estadoDescarga').textContent='✅ Biblia descargada - texto + audio offline'; cargarTodosEnMemoria();}
-renderChatHistorial();
-
+libroSel.addEventListener('change',cargarCaps);
+capSel.addEventListener('change',cargarCap);
 document.getElementById('libro').addEventListener('click',e=>{
   let el=e.target.closest('.vers');
-  if(el){abrirModal(+el.dataset.i)}
+  if(el) abrirModal(+el.dataset.i);
 });
 
 function mostrar(v){
@@ -149,99 +122,160 @@ function mostrar(v){
   if(v==='fav') renderFav();
 }
 
-function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open('bibliaDB',1);r.onupgradeneeded=e=>{e.target.result.createObjectStore('verses',{keyPath:'id'})};r.onsuccess=e=>res(e.target.result);r.onerror=()=>rej()})}
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open('bibliaMaxDB',1);r.onupgradeneeded=e=>{e.target.result.createObjectStore('verses',{keyPath:'id'})};r.onsuccess=e=>res(e.target.result);r.onerror=()=>rej()})}
 async function guardarLote(lote){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction('verses','readwrite');const st=tx.objectStore('verses');lote.forEach(v=>st.put(v));tx.oncomplete=res;tx.onerror=()=>rej()})}
-async function obtenerCapitulo(code,cap){
-  const db=await openDB();
-  return new Promise(res=>{
-    const tx=db.transaction('verses','readonly');const st=tx.objectStore('verses');
-    const out=[];st.openCursor().onsuccess=e=>{const c=e.target.result;if(c){if(c.value.book===code&&c.value.chapter==cap)out.push(c.value);c.continue()}else res(out.sort((a,b)=>a.verse-b.verse))};
-  });
-}
-async function cargarTodosEnMemoria(){
-  const db=await openDB();
-  return new Promise(res=>{const tx=db.transaction('verses','readonly');const st=tx.objectStore('verses');const out=[];st.openCursor().onsuccess=e=>{const c=e.target.result;if(c){out.push(c.value);c.continue()}else{todosLosVersiculos=out;res()}}});
+async function borrarDB(){const db=await openDB();return new Promise(res=>{const tx=db.transaction('verses','readwrite');tx.objectStore('verses').clear();tx.oncomplete=res})}
+
+// LIMPIAR TEXTO
+function limpiar(t){return (t||'').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim()}
+
+function normalizarLibros(json){
+  let raw = json.books || json.data?.books || json.data || json;
+  if(!Array.isArray(raw)) raw = Object.values(raw);
+  let libros=[];
+  for(let b of raw){
+    let nombre = b.book_name || b.name || b.title || b.book || 'Libro';
+    let capsRaw = b.chapters || b.chapter || [];
+    let caps=[];
+    for(let c of capsRaw){
+      let numCap = c.chapter_id || c.chapter || c.num || (caps.length+1);
+      let items = c.items || c.verses || [];
+      let vers=[];
+      if(Array.isArray(items)){
+        for(let it of items){
+          if(typeof it==='string'){ vers.push({verse:vers.length+1, texto:limpiar(it)}); }
+          else if(it.lines){ vers.push({verse:parseInt(it.verse_number||it.verse_numbers||vers.length+1), texto:limpiar(it.lines.join(' '))}); }
+          else if(it.text){ vers.push({verse:parseInt(it.verse_number||it.verse||vers.length+1), texto:limpiar(it.text)}); }
+        }
+      }
+      if(vers.length>0) caps.push({cap:parseInt(numCap), verses:vers});
+    }
+    if(caps.length>0) libros.push({nombre, caps});
+  }
+  return libros;
 }
 
+// DESCARGA ÚNICA Y RÁPIDA
 async function descargarBiblia(){
   let barra=document.getElementById('barraLlena'), prog=document.getElementById('progreso');
-  let totalCaps=LIBROS.reduce((s,l)=>s+l[2],0);
-  let hechos=0, lote=[];
-  for(let bi=0;bi<LIBROS.length;bi++){
-    let [nombre,code,total]=LIBROS[bi];
-    for(let cap=1;cap<=total;cap++){
-      try{
-        let r=await fetch(`https://bolls.life/get-text/${code}/${cap}/?translation=rvr1960`);
-        let data=await r.json();
-        // URL de audio real por capítulo
-        let audioUrl=`https://bolls.life/audio/rvr1960/${code}/${cap}/`;
-        data.forEach(v=>{
-          let txt=(v.text||'').replace(/<[^>]*>/g,'');
-          lote.push({id:`${code}_${cap}_${v.verse}`, book:code, bookName:nombre, chapter:cap, verse:v.verse, texto:txt, audio:audioUrl});
-        });
-      }catch(e){}
-      hechos++;
-      barra.style.width=Math.round(hechos/totalCaps*100)+'%';
-      prog.textContent=`Descargando ${nombre} ${cap}... ${Math.round(hechos/totalCaps*100)}%`;
-      if(lote.length>=200){await guardarLote(lote); lote=[];}
+  prog.textContent='Descargando archivo completo...';
+  barra.style.width='10%';
+  try{
+    let url='https://mrk214.github.io/snapshots/es___spa___spa/RVR1960_vid_149.json';
+    let resp=await fetch(url);
+    if(!resp.ok) throw new Error('no bajo');
+    prog.textContent='Procesando Biblia...';
+    barra.style.width='60%';
+    let json=await resp.json();
+    estructuraLibros=normalizarLibros(json);
+    if(estructuraLibros.length===0) throw new Error('formato');
+
+    await borrarDB();
+    todosLosVersiculos=[];
+    let lote=[];
+    let total=0;
+    estructuraLibros.forEach(l=>l.caps.forEach(c=>total+=c.verses.length));
+    let hechos=0;
+    for(let lib of estructuraLibros){
+      for(let cap of lib.caps){
+        for(let v of cap.verses){
+          let ref=`${lib.nombre} ${cap.cap}:${v.verse}`;
+          let obj={id:ref, book:lib.nombre, chapter:cap.cap, verse:v.verse, texto:v.texto, ref};
+          lote.push(obj); todosLosVersiculos.push(obj);
+          hechos++;
+          if(lote.length>=500){ await guardarLote(lote); lote=[]; }
+        }
+      }
+      barra.style.width=Math.round(hechos/total*100)+'%';
+      prog.textContent=`Guardando ${lib.nombre}... ${Math.round(hechos/total*100)}%`;
     }
+    if(lote.length) await guardarLote(lote);
+    localStorage.setItem('bibliaMaxOK','1');
+    prog.textContent='✅ LISTO! Biblia completa guardada. Ya funciona sin internet.';
+    barra.style.width='100%';
+    document.getElementById('estadoDescarga').textContent='✅ Biblia completa descargada';
+    llenarSelectores(); cargarCap();
+  }catch(e){
+    prog.textContent='❌ Error al descargar. Tocá de nuevo. Revisá internet.';
+    console.error(e);
   }
-  if(lote.length) await guardarLote(lote);
-  localStorage.setItem('bibliaOK','1'); bibliaDescargada=true;
-  document.getElementById('estadoDescarga').textContent='✅ Biblia descargada - texto + audio offline';
-  prog.textContent='Listo! Audio y texto guardados.';
-  await cargarTodosEnMemoria(); cargarCap();
 }
 
-async function cargarCaps(){
-  let total=LIBROS[libroSel.value][2];
+async function cargarDesdeDB(){
+  try{
+    const db=await openDB();
+    let req=db.transaction('verses','readonly').objectStore('verses').getAll();
+    let data=await new Promise(res=>{req.onsuccess=()=>res(req.result)});
+    if(data && data.length>1000){
+      todosLosVersiculos=data;
+      // reconstruir estructura
+      let mapa={};
+      data.forEach(v=>{ if(!mapa[v.book]) mapa[v.book]={nombre:v.book, capsSet:new Set()}; mapa[v.book].capsSet.add(v.chapter); });
+      estructuraLibros=Object.values(mapa).map(m=>({nombre:m.nombre, caps:[...m.capsSet].sort((a,b)=>a-b).map(c=>({cap:c}))}));
+      llenarSelectores();
+      document.getElementById('estadoDescarga').textContent='✅ Biblia cargada desde tu celular';
+      await cargarCap();
+    }
+  }catch(e){}
+}
+cargarDesdeDB();
+
+function llenarSelectores(){
+  libroSel.innerHTML=''; capSel.innerHTML='';
+  estructuraLibros.forEach((l,i)=>{
+    let o=document.createElement('option'); o.value=i; o.textContent=l.nombre; libroSel.appendChild(o);
+  });
+  cargarCaps();
+}
+function cargarCaps(){
+  let idx=+libroSel.value;
+  if(!estructuraLibros[idx]) return;
   capSel.innerHTML='';
-  for(let c=1;c<=total;c++){let o=document.createElement('option');o.value=c;o.textContent='Capítulo '+c;capSel.appendChild(o)}
-  await cargarCap();
+  estructuraLibros[idx].caps.forEach(c=>{
+    let o=document.createElement('option'); o.value=c.cap; o.textContent='Capítulo '+c.cap; capSel.appendChild(o);
+  });
+  cargarCap();
 }
 async function cargarCap(){
-  if(!bibliaDescargada){document.getElementById('libro').innerHTML='<p style="text-align:center;color:#f5d76e;padding:20px">Tocá DESCARGAR BIBLIA COMPLETA arriba.</p>';return}
-  let idx=+libroSel.value, cap=+capSel.value;
-  let [nombre,code]=[LIBROS[idx][0],LIBROS[idx][1]];
-  let cont=document.getElementById('libro');
-  cont.innerHTML='<p style="text-align:center;color:#888;padding:20px">Abriendo '+nombre+' '+cap+'...</p>';
-  let data=await obtenerCapitulo(code,cap);
-  if(data.length===0){cont.innerHTML='<p style="text-align:center;color:#888">Vacío</p>';return}
-  currentVerses=data.map(v=>({num:v.verse, ref:`${v.bookName} ${v.chapter}:${v.verse}`, texto:v.texto}));
-  currentMeta={nombre, code, cap, audio:data[0].audio};
+  if(todosLosVersiculos.length===0){
+    document.getElementById('libro').innerHTML='<p style="text-align:center;color:#f5d76e;padding:20px">Tocá DESCARGAR BIBLIA COMPLETA arriba.</p>';return;
+  }
+  let idx=+libroSel.value; let nombre=estructuraLibros[idx].nombre;
+  let cap=+capSel.value;
+  let vers=todosLosVersiculos.filter(v=>v.book===nombre && v.chapter===cap).sort((a,b)=>a.verse-b.verse);
+  currentVerses=vers;
   let html=`<div class="titulo-libro">${nombre} ${cap}</div><div class="texto" style="font-size:${tamLetra}px"><span class="cap-num">${cap}</span>`;
-  currentVerses.forEach((v,i)=>{
+  vers.forEach((v,i)=>{
     let isRes=resaltados.has(v.ref)?' resaltado':'';
-    html+=`<span class="vers${isRes}" data-i="${i}"><span class="num">${v.num}</span> ${v.texto} </span>`;
+    html+=`<span class="vers${isRes}" data-i="${i}"><span class="num">${v.verse}</span> ${v.texto} </span>`;
   });
-  html+=`</div>`;
-  html+=`<audio controls src="${currentMeta.audio}"><a href="${currentMeta.audio}">Escuchar audio del capítulo</a></audio>`;
-  html+=`<div class="nav"><button onclick="cambiarCap(-1)">← Anterior</button><button onclick="leerConVoz()">🔊 Voz tranquila</button><button onclick="cambiarCap(1)">Siguiente →</button></div>`;
-  cont.innerHTML=html;
+  html+=`</div><div class="nav"><button onclick="cambiarCap(-1)">← Anterior</button><button onclick="leerVoz()">🔊 Escuchar</button><button onclick="cambiarCap(1)">Siguiente →</button></div>`;
+  document.getElementById('libro').innerHTML=html;
 }
 function cambiarCap(d){
-  let idx=+libroSel.value, cap=+capSel.value, total=LIBROS[idx][2];
-  let nuevo=cap+d;
-  if(nuevo<1){ if(idx>0){libroSel.value=idx-1;cargarCaps().then(()=>{capSel.value=LIBROS[idx-1][2];cargarCap()});} return; }
-  if(nuevo>total){ if(idx<LIBROS.length-1){libroSel.value=idx+1;cargarCaps().then(()=>{capSel.value=1;cargarCap()});} return; }
-  capSel.value=nuevo; cargarCap();
+  let idx=+libroSel.value;
+  let caps=estructuraLibros[idx].caps.map(c=>c.cap);
+  let pos=caps.indexOf(+capSel.value);
+  let nuevoPos=pos+d;
+  if(nuevoPos<0){ if(idx>0){libroSel.value=idx-1;cargarCaps();capSel.value=estructuraLibros[idx-1].caps.slice(-1)[0].cap;} return; }
+  if(nuevoPos>=caps.length){ if(idx<estructuraLibros.length-1){libroSel.value=idx+1;cargarCaps();capSel.value=estructuraLibros[idx+1].caps[0].cap;} return; }
+  capSel.value=caps[nuevoPos]; cargarCap();
 }
-async function buscarCita(){
-  let raw=document.getElementById('buscarInput').value.trim(); if(!raw){alert('Escribí una cita');return}
+function buscarCita(){
+  let raw=document.getElementById('buscarInput').value.trim(); if(!raw) return;
   let m=raw.match(/(.+?)\s*(\d+):(\d+)/); if(!m){alert('Formato: Juan 3:16');return}
   let libroTxt=m[1].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-  let idx=LIBROS.findIndex(l=>l[0].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(libroTxt));
+  let idx=estructuraLibros.findIndex(l=>l.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(libroTxt));
   if(idx<0){alert('Libro no encontrado');return}
-  libroSel.value=idx; await cargarCaps(); capSel.value=m[2]; await cargarCap();
+  libroSel.value=idx; cargarCaps(); capSel.value=m[2]; cargarCap();
   setTimeout(()=>{document.querySelectorAll('.num').forEach(n=>{if(n.textContent===m[3]){n.parentElement.style.background='#3a3320';n.parentElement.scrollIntoView({behavior:'smooth',block:'center'})}})},700);
 }
-async function buscarPalabra(){
+function buscarPalabra(){
   let palabra=document.getElementById('buscarPalabra').value.trim().toLowerCase();
   if(!palabra) return;
-  if(!bibliaDescargada){alert('Descargá primero');return}
   let res=todosLosVersiculos.filter(v=>v.texto.toLowerCase().includes(palabra)).slice(0,20);
   let html=`<div class="titulo-libro">Resultados para "${palabra}" (${res.length})</div>`;
-  res.forEach(v=>{html+=`<div class="card"><small>${v.bookName} ${v.chapter}:${v.verse}</small><p>"${v.texto}"</p><button onclick="hablarSuave('${v.texto.replace(/'/g,"")}','${v.bookName} ${v.chapter}:${v.verse}')">🔊 Escuchar</button></div>`});
+  res.forEach(v=>{html+=`<div class="card"><small>${v.ref}</small><p>"${v.texto}"</p><button onclick="hablarSuave('${v.texto.replace(/'/g,"")}','${v.ref}')">🔊 Escuchar</button></div>`});
   document.getElementById('libro').innerHTML=html;
 }
 
@@ -252,86 +286,94 @@ function abrirModal(i){
   document.getElementById('modal').style.display='block';
 }
 function cerrarModal(){document.getElementById('modal').style.display='none'}
-function accionFav(){if(!favs.find(f=>f.ref===seleccionado.ref)){favs.push(seleccionado);localStorage.setItem('favDef',JSON.stringify(favs));alert('⭐ Guardado')}cerrarModal()}
-function accionResaltar(){if(resaltados.has(seleccionado.ref))resaltados.delete(seleccionado.ref);else resaltados.add(seleccionado.ref);localStorage.setItem('resDef',JSON.stringify([...resaltados]));cargarCap();cerrarModal()}
+function accionFav(){if(!favs.find(f=>f.ref===seleccionado.ref)){favs.push(seleccionado);localStorage.setItem('favMax',JSON.stringify(favs));alert('⭐ Guardado')}cerrarModal()}
+function accionResaltar(){if(resaltados.has(seleccionado.ref))resaltados.delete(seleccionado.ref);else resaltados.add(seleccionado.ref);localStorage.setItem('resMax',JSON.stringify([...resaltados]));cargarCap();cerrarModal()}
 function accionEscuchar(){hablarSuave(seleccionado.texto,seleccionado.ref);cerrarModal()}
 function accionCompartir(){window.open('https://wa.me/?text='+encodeURIComponent(seleccionado.ref+': '+seleccionado.texto),'_blank');cerrarModal()}
 function hablarSuave(texto,ref){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(ref+'. '+texto);u.lang='es-AR';u.rate=0.85;u.pitch=0.9;speechSynthesis.speak(u)}
-function leerConVoz(){hablarSuave(document.getElementById('libro').innerText,'Capítulo')}
-function cambiarLetra(d){tamLetra=Math.min(24,Math.max(14,tamLetra+d));cargarCap()}
+function leerVoz(){hablarSuave(document.getElementById('libro').innerText,'Capítulo')}
 function renderFav(){
   let c=document.getElementById('listaFav');
   if(favs.length===0){c.innerHTML='<p style="color:#888">No tenés favoritos.</p>';return}
   c.innerHTML=favs.map((f,i)=>`<div class="card"><small>${f.ref}</small><p>"${f.texto}"</p><button onclick="borrarFav(${i})" style="background:#a00;color:#fff">Borrar</button></div>`).join('');
 }
-function borrarFav(i){favs.splice(i,1);localStorage.setItem('favDef',JSON.stringify(favs));renderFav()}
+function borrarFav(i){favs.splice(i,1);localStorage.setItem('favMax',JSON.stringify(favs));renderFav()}
 
-// --- IA CONTEXTUAL ---
+// --- IA CONTEXTUAL QUE SIEMPRE MANDA VERSICULOS ---
 const TEMAS = {
-  economia: {p:['plata','econom','deuda','trabajo','desempleo','sueldo','pobre','falta','proveer'], vers:['Filipenses 4:19','Mateo 6:33','Proverbios 3:9','Malaquias 3:10']},
-  ansiedad: {p:['ansied','nervio','preocup','estres','angust','inquiet','miedo','temor','panico'], vers:['Filipenses 4:6','1 Pedro 5:7','Isaías 41:10','Salmos 94:19']},
-  tristeza: {p:['triste','llanto','dolor','depre','solo','abandon','quebrant','llorar'], vers:['Salmos 34:18','Salmos 42:11','Isaías 61:3','Juan 11:35']},
-  familia: {p:['familia','hijo','esposa','marido','padre','madre','hermano','casa','matrimonio'], vers:['Josué 24:15','Salmos 133:1','Proverbios 22:6','Efesios 5:25']},
-  salud: {p:['enferm','salud','dolor','cuerpo','cancer','operacion','curar','sanar'], vers:['Isaías 53:5','Santiago 5:14','Salmos 41:3','Jeremías 30:17']},
-  perdon: {p:['perdon','culpa','pecado','fallé','error','arrepent'], vers:['1 Juan 1:9','Salmos 51:10','Isaías 1:18','Mateo 6:14']},
-  esperanza: {p:['esperanza','futuro','dios','plan','proposito','porque','para que'], vers:['Jeremías 29:11','Romanos 8:28','Proverbios 3:5','Isaías 40:31']},
-  amor: {p:['amor','soledad','quiero','novia','novio','pareja','amado'], vers:['Juan 3:16','1 Corintios 13:4','Romanos 8:38','Salmos 136:1']}
+  economia: {p:['plata','econom','deuda','trabajo','sueldo','pobre','falta','proveer','desempleo'], vers:['Filipenses 4:19','Mateo 6:33','Proverbios 3:9']},
+  ansiedad: {p:['ansied','nervio','preocup','estres','angust','miedo','temor','panico','inquiet'], vers:['Filipenses 4:6','1 Pedro 5:7','Isaías 41:10']},
+  tristeza: {p:['triste','llanto','dolor','depre','solo','abandon','llorar','quebrant'], vers:['Salmos 34:18','Salmos 42:11','Isaías 61:3']},
+  familia: {p:['familia','hijo','esposa','marido','padre','madre','hermano','casa','matrimonio'], vers:['Josué 24:15','Salmos 133:1','Proverbios 22:6']},
+  salud: {p:['enferm','salud','cuerpo','cancer','operacion','curar','sanar'], vers:['Isaías 53:5','Santiago 5:14','Salmos 41:3']},
+  perdon: {p:['perdon','culpa','pecado','fallé','arrepent'], vers:['1 Juan 1:9','Salmos 51:10','Isaías 1:18']},
+  esperanza: {p:['esperanza','futuro','plan','proposito'], vers:['Jeremías 29:11','Romanos 8:28','Proverbios 3:5']},
+  amor: {p:['amor','soledad','pareja','novia','novio'], vers:['Juan 3:16','1 Corintios 13:4','Romanos 8:38']}
 };
 
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 function detectarTemas(texto){
-  let t=texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  let t=norm(texto);
   let encontrados=[];
   for(let k in TEMAS){
     let score=0;
     TEMAS[k].p.forEach(p=>{if(t.includes(p)) score+=2});
     if(score>0) encontrados.push({tema:k,score});
   }
-  // contexto anterior
+  // CONTEXTO: mira lo anterior
   historial.slice(-3).forEach(h=>{
+    let ht=norm(h);
     for(let k in TEMAS){
-      if(h.toLowerCase().includes(k) || TEMAS[k].p.some(p=>h.toLowerCase().includes(p))){
+      if(TEMAS[k].p.some(p=>ht.includes(p))){
         let ex=encontrados.find(e=>e.tema===k);
-        if(ex) ex.score+=1.5; else encontrados.push({tema:k,score:1.5});
+        if(ex) ex.score+=2; else encontrados.push({tema:k,score:2});
       }
     }
   });
   encontrados.sort((a,b)=>b.score-a.score);
   return encontrados.map(e=>e.tema);
 }
-
 function versiculoPorRef(refBuscado){
   let m=refBuscado.match(/(.+?)\s*(\d+):(\d+)/);
   if(!m) return null;
-  let libroTxt=m[1].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-  let cap=+m[2], ver=+m[3];
-  return todosLosVersiculos.find(v=> v.bookName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(libroTxt) && v.chapter==cap && v.verse==ver);
+  let lt=norm(m[1]), cap=+m[2], ver=+m[3];
+  return todosLosVersiculos.find(v=> norm(v.book).includes(lt) && v.chapter===cap && v.verse===ver);
 }
 
 function pedirIA(){
   let consulta=document.getElementById('consultaIA').value.trim();
   if(!consulta) return;
-  if(!bibliaDescargada){alert('Descargá primero la Biblia para que la IA funcione');return}
+  if(todosLosVersiculos.length===0){alert('Descargá primero la Biblia');return}
   historial.push(consulta);
   if(historial.length>10) historial=historial.slice(-10);
-  localStorage.setItem('chatCtx',JSON.stringify(historial));
-
+  localStorage.setItem('chatMax',JSON.stringify(historial));
   agregarChat('user',consulta);
   document.getElementById('consultaIA').value='';
 
-  let temas=detectarTemas(consulta+' '+historial.slice(-2).join(' '));
-  let refsElegidas=[];
-  temas.forEach(t=>{ TEMAS[t].vers.forEach(r=>{ if(!refsElegidas.includes(r)) refsElegidas.push(r); })});
-  if(refsElegidas.length===0) refsElegidas=['Juan 3:16','Salmos 23:1','Filipenses 4:13'];
+  let temas=detectarTemas(consulta);
+  let refs=[];
+  temas.forEach(t=>{ TEMAS[t].vers.forEach(r=>{ if(!refs.includes(r)) refs.push(r); })});
+  if(refs.length===0) refs=['Juan 3:16','Salmos 23:1','Filipenses 4:13'];
 
-  let seleccion=refsElegidas.slice(0,3).map(r=>versiculoPorRef(r)).filter(Boolean);
-  if(seleccion.length===0) seleccion=todosLosVersiculos.slice(0,3);
+  let seleccion=[];
+  for(let r of refs){
+    let v=versiculoPorRef(r);
+    if(v &&!seleccion.find(s=>s.ref===v.ref)) seleccion.push(v);
+    if(seleccion.length>=3) break;
+  }
+  // SI NO ENCONTRÓ POR REF, BUSCA POR PALABRAS DEL TEMA (garantiza que siempre manda algo)
+  if(seleccion.length<3 && temas.length>0){
+    let palabras=TEMAS[temas[0]].p;
+    for(let v of todosLosVersiculos){
+      if(seleccion.length>=3) break;
+      if(palabras.some(p=>v.texto.toLowerCase().includes(p)) &&!seleccion.find(s=>s.ref===v.ref)) seleccion.push(v);
+    }
+  }
+  if(seleccion.length===0) seleccion=todosLosVersiculos.filter(v=>v.book==='Juan').slice(0,3);
 
-  let contextoExtra = temas.length>0? `Veo que tu tema principal es: ${temas.join(', ')}. ` : '';
-  let respuestaTexto = contextoExtra + `Te traigo 3 versículos para tu situación. Leelos despacio y escuchalos.`;
-
-  agregarChat('ia', respuestaTexto, seleccion);
+  let textoIA = temas.length>0? `Veo que estás pasando por un momento de ${temas.join(', ')}. Te dejo esto de la Palabra:` : `Te dejo estos versículos para vos:`;
+  agregarChat('ia', textoIA, seleccion);
 }
-
 function agregarChat(quien, texto, versiculos){
   let chat=document.getElementById('chatIA');
   let div=document.createElement('div');
@@ -342,25 +384,13 @@ function agregarChat(quien, texto, versiculos){
     versiculos.forEach(v=>{
       let card=document.createElement('div');
       card.className='msg ia';
-      card.innerHTML=`<b>${v.bookName} ${v.chapter}:${v.verse}</b><br>"${v.texto}"<br><button style="margin-top:6px;padding:8px;border-radius:8px;border:none;background:#f5d76e" onclick="hablarSuave('${v.texto.replace(/'/g,"")}','${v.bookName} ${v.chapter}:${v.verse}')">🔊 Escuchar</button>`;
+      card.innerHTML=`<b>${v.ref}</b><br>"${v.texto}"<br><button style="margin-top:6px;padding:8px;border-radius:8px;border:none;background:#f5d76e;width:100%" onclick="hablarSuave('${v.texto.replace(/'/g,"")}','${v.ref}')">🔊 Escuchar</button>`;
       chat.appendChild(card);
     });
   }
   chat.scrollTop=chat.scrollHeight;
 }
-function renderChatHistorial(){
-  let chat=document.getElementById('chatIA');
-  chat.innerHTML='<div class="msg ia">Hola, soy tu consejero bíblico. Contame, ¿cómo estás hoy?</div>';
-  historial.forEach((h,i)=>{
-    // solo mostramos como usuario, la IA ya respondió en su momento
-  });
-}
-function limpiarChat(){historial=[];localStorage.setItem('chatCtx','[]');document.getElementById('chatIA').innerHTML='<div class="msg ia">Conversación limpia. Contame de nuevo, ¿cómo estás?</div>'}
-function verDelDia(){
-  if(!bibliaDescargada){alert('Descargá la Biblia primero');return}
-  let e=todosLosVersiculos[Math.floor(Math.random()*todosLosVersiculos.length)];
-  alert('✨ Versículo del día\n'+e.bookName+' '+e.chapter+':'+e.verse+'\n"'+e.texto+'"');
-}
+function limpiarChat(){historial=[];localStorage.setItem('chatMax','[]');document.getElementById('chatIA').innerHTML='<div class="msg ia">Conversación limpia. Contame de nuevo.</div>'}
 </script>
 </body>
 </html>
