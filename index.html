@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Biblia PRO MAX</title>
+<title>Biblia </title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0b0b0b;color:#e8e0c9;font-family:Georgia,serif}
@@ -19,7 +19,7 @@ header h1{color:#f5d76e;font-size:19px}
 #barra{width:100%;background:#333;border-radius:99px;height:12px;margin-top:10px;overflow:hidden}
 #barraLlena{height:100%;width:0%;background:#f5d76e}
 #libro{background:#121210;border-radius:16px;padding:18px;min-height:60vh}
-.titulo-libro{text-align:center;color:#f5d76e;font-size:22px;border-bottom:1px solid #333;padding-bottom:10px;margin-bottom:12px}
+.titulo-libro{text-align:center;color:#f5d76e;font-size:24px;border-bottom:1px solid #333;padding-bottom:10px;margin-bottom:12px}
 .cap-num{font-size:46px;float:left;line-height:.9;margin:6px 10px 2px 0;color:#f5d76e;font-weight:800}
 .texto{font-size:18px;line-height:2;text-align:justify}
 .vers{cursor:pointer;border-radius:6px;padding:2px}
@@ -34,12 +34,10 @@ button.grande{width:100%;margin-top:10px;padding:14px;border-radius:10px;border:
 .card small{color:#f5d76e;font-weight:800}
 .card p{margin-top:6px;line-height:1.6}
 .card button{margin-top:8px;padding:10px;border-radius:99px;border:none;background:#f5d76e;font-weight:700;width:100%;cursor:pointer}
-.card button.verde{background:#2e7d32;color:#fff}
 .chat{max-height:320px;overflow-y:auto;background:#111;border-radius:12px;padding:10px;margin-top:10px;border:1px solid #333}
 .msg{padding:10px;border-radius:12px;margin-bottom:8px;line-height:1.5}
 .msg.user{background:#2a2a2a;text-align:right}
 .msg.ia{background:#3a3320;border-left:3px solid #f5d76e}
-.msg.ia.toca{cursor:pointer;border-bottom:1px dashed #f5d76e;color:#f5d76e;font-weight:800}
 #modal{position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;border-top:2px solid #f5d76e;padding:16px;display:none;z-index:20;max-width:720px;margin:0 auto}
 #modal button{display:block;width:100%;margin-top:8px;padding:12px;border-radius:10px;border:none;background:#f5d76e;font-weight:800;cursor:pointer}
 #modal button.sec{background:#333;color:#fff}
@@ -58,7 +56,6 @@ button.grande{width:100%;margin-top:10px;padding:14px;border-radius:10px;border:
 <div id="sec-leer" class="seccion activa">
 <div id="descargaBox">
 <b id="estadoDescarga">📥 Descargar TODA la Biblia de una vez</b>
-<p style="font-size:13px;margin-top:6px;color:#ccc">Después anda sin internet. Sin clave.</p>
 <button onclick="descargarBiblia()">DESCARGAR BIBLIA COMPLETA</button>
 <div id="barra"><div id="barraLlena"></div></div>
 <small id="progreso"></small>
@@ -66,13 +63,10 @@ button.grande{width:100%;margin-top:10px;padding:14px;border-radius:10px;border:
 
 <input id="buscarInput" placeholder="Buscar cita: Juan 3:16">
 <button class="grande" onclick="buscarCita()">🔍 BUSCAR CITA</button>
-<input id="buscarPalabra" placeholder="Buscar palabra en toda la Biblia: paz, amor...">
-<button class="grande" style="background:#333;color:#f5d76e" onclick="buscarPalabra()">BUSCAR PALABRA</button>
 
-<!-- ACÁ ESTÁN LOS NOMBRES -->
-<label style="color:#f5d76e;font-size:13px;margin-top:10px;display:block">LIBRO</label>
+<label style="color:#f5d76e;margin-top:10px;display:block">LIBRO</label>
 <select id="libroSel"></select>
-<label style="color:#f5d76e;font-size:13px;margin-top:10px;display:block">CAPÍTULO</label>
+<label style="color:#f5d76e;margin-top:10px;display:block">CAPÍTULO</label>
 <select id="capSel"></select>
 
 <div id="libro" style="margin-top:12px"><p style="text-align:center;color:#888;padding:20px">Tocá DESCARGAR BIBLIA COMPLETA</p></div>
@@ -80,8 +74,8 @@ button.grande{width:100%;margin-top:10px;padding:14px;border-radius:10px;border:
 
 <div id="sec-ia" class="seccion">
 <div class="card">
-<small>🤖 IA CONTEXTUAL - Tocá el versículo para ir al libro</small>
-<div id="chatIA" class="chat"><div class="msg ia">Hola, contame cómo estás. Te busco versículos de verdad.</div></div>
+<small>🤖 IA - Tocá el versículo para ir al libro</small>
+<div id="chatIA" class="chat"><div class="msg ia">Hola, contame cómo estás.</div></div>
 <textarea id="consultaIA" rows="2" placeholder="Ej: no duermo, tengo miedo..."></textarea>
 <button class="grande" onclick="pedirIA()">ENVIAR</button>
 <button class="grande" style="background:#333;color:#fff" onclick="limpiarChat()">Limpiar chat</button>
@@ -99,11 +93,13 @@ button.grande{width:100%;margin-top:10px;padding:14px;border-radius:10px;border:
 <button onclick="accionFav()">⭐ Guardar en Favoritos</button>
 <button class="sec" onclick="accionResaltar()">🖍 Resaltar</button>
 <button class="sec" onclick="accionEscuchar()">🔊 Escuchar</button>
-<button class="sec" onclick="accionCompartir()">💬 Compartir</button>
 <button class="sec" style="background:#a00;color:#fff" onclick="cerrarModal()">Cerrar</button>
 </div>
 
 <script>
+// LOS 66 NOMBRES COMO TIEN QUE SER
+const NOMBRES = ["Génesis","Éxodo","Levítico","Números","Deuteronomio","Josué","Jueces","Rut","1 Samuel","2 Samuel","1 Reyes","2 Reyes","1 Crónicas","2 Crónicas","Esdras","Nehemías","Ester","Job","Salmos","Proverbios","Eclesiastés","Cantares","Isaías","Jeremías","Lamentaciones","Ezequiel","Daniel","Oseas","Joel","Amós","Abdías","Jonás","Miqueas","Nahum","Habacuc","Sofonías","Hageo","Zacarías","Malaquías","Mateo","Marcos","Lucas","Juan","Hechos","Romanos","1 Corintios","2 Corintios","Gálatas","Efesios","Filipenses","Colosenses","1 Tesalonicenses","2 Tesalonicenses","1 Timoteo","2 Timoteo","Tito","Filemón","Hebreos","Santiago","1 Pedro","2 Pedro","1 Juan","2 Juan","3 Juan","Judas","Apocalipsis"];
+
 let estructuraLibros=[];
 let todosLosVersiculos=[];
 let currentVerses=[], seleccionado=null, tamLetra=18;
@@ -137,8 +133,7 @@ function normalizarLibros(json){
   let raw = json.books || json.data?.books || json.data || json;
   if(!Array.isArray(raw)) raw = Object.values(raw);
   let libros=[];
-  for(let b of raw){
-    let nombre = b.book_name || b.name || b.title || b.book || 'Libro';
+  raw.forEach((b,i)=>{
     let capsRaw = b.chapters || b.chapter || [];
     let caps=[];
     for(let c of capsRaw){
@@ -154,29 +149,27 @@ function normalizarLibros(json){
       }
       if(vers.length>0) caps.push({cap:parseInt(numCap), verses:vers});
     }
-    if(caps.length>0) libros.push({nombre, caps});
-  }
+    if(caps.length>0){
+      // FORZAMOS EL NOMBRE CORRECTO POR ORDEN
+      let nombreCorrecto = NOMBRES[i] || (b.book_name || b.name || 'Libro '+(i+1));
+      libros.push({nombre:nombreCorrecto, caps});
+    }
+  });
   return libros;
 }
 
 async function descargarBiblia(){
   let barra=document.getElementById('barraLlena'), prog=document.getElementById('progreso');
-  prog.textContent='Descargando archivo completo...';
+  prog.textContent='Descargando...';
   barra.style.width='10%';
   try{
     let url='https://mrk214.github.io/snapshots/es___spa___spa/RVR1960_vid_149.json';
     let resp=await fetch(url);
-    if(!resp.ok) throw new Error('no bajo');
-    prog.textContent='Procesando Biblia...';
-    barra.style.width='60%';
     let json=await resp.json();
     estructuraLibros=normalizarLibros(json);
-    if(estructuraLibros.length===0) throw new Error('formato');
     await borrarDB();
     todosLosVersiculos=[];
-    let lote=[];
-    let total=0;
-    estructuraLibros.forEach(l=>l.caps.forEach(c=>total+=c.verses.length));
+    let lote=[]; let total=estructuraLibros.reduce((s,l)=>s+l.caps.reduce((a,c)=>a+c.verses.length,0),0);
     let hechos=0;
     for(let lib of estructuraLibros){
       for(let cap of lib.caps){
@@ -189,17 +182,16 @@ async function descargarBiblia(){
         }
       }
       barra.style.width=Math.round(hechos/total*100)+'%';
-      prog.textContent=`Guardando ${lib.nombre}... ${Math.round(hechos/total*100)}%`;
+      prog.textContent=`Guardando ${lib.nombre}...`;
     }
     if(lote.length) await guardarLote(lote);
     localStorage.setItem('bibliaMaxOK','1');
-    prog.textContent='✅ LISTO! Biblia completa guardada.';
+    prog.textContent='✅ LISTO! Con nombres correctos.';
     barra.style.width='100%';
     document.getElementById('estadoDescarga').textContent='✅ Biblia completa descargada';
     llenarSelectores(); cargarCap();
   }catch(e){
     prog.textContent='❌ Error. Tocá de nuevo.';
-    console.error(e);
   }
 }
 
@@ -212,9 +204,10 @@ async function cargarDesdeDB(){
       todosLosVersiculos=data;
       let mapa={};
       data.forEach(v=>{ if(!mapa[v.book]) mapa[v.book]={nombre:v.book, capsSet:new Set()}; mapa[v.book].capsSet.add(v.chapter); });
-      estructuraLibros=Object.values(mapa).map(m=>({nombre:m.nombre, caps:[...m.capsSet].sort((a,b)=>a-b).map(c=>({cap:c}))}));
+      // ordenar por el orden de NOMBRES
+      estructuraLibros=Object.values(mapa).sort((a,b)=>NOMBRES.indexOf(a.nombre)-NOMBRES.indexOf(b.nombre)).map(m=>({nombre:m.nombre, caps:[...m.capsSet].sort((a,b)=>a-b).map(c=>({cap:c}))}));
       llenarSelectores();
-      document.getElementById('estadoDescarga').textContent='✅ Biblia cargada desde tu celular';
+      document.getElementById('estadoDescarga').textContent='✅ Biblia cargada';
       await cargarCap();
     }
   }catch(e){}
@@ -273,14 +266,6 @@ function buscarCita(){
   libroSel.value=idx; cargarCaps(); capSel.value=m[2]; cargarCap();
   setTimeout(()=>{document.querySelectorAll('.num').forEach(n=>{if(n.textContent===m[3]){n.parentElement.style.background='#3a3320';n.parentElement.scrollIntoView({behavior:'smooth',block:'center'})}})},700);
 }
-function buscarPalabra(){
-  let palabra=document.getElementById('buscarPalabra').value.trim().toLowerCase();
-  if(!palabra) return;
-  let res=todosLosVersiculos.filter(v=>v.texto.toLowerCase().includes(palabra)).slice(0,20);
-  let html=`<div class="titulo-libro">Resultados para "${palabra}" (${res.length})</div>`;
-  res.forEach(v=>{html+=`<div class="card"><small>${v.ref}</small><p>"${v.texto}"</p><button onclick="irAVersiculo('${v.ref}')">📖 Leer capítulo completo</button></div>`});
-  document.getElementById('libro').innerHTML=html;
-}
 
 function abrirModal(i){
   seleccionado=currentVerses[i];
@@ -289,20 +274,18 @@ function abrirModal(i){
   document.getElementById('modal').style.display='block';
 }
 function cerrarModal(){document.getElementById('modal').style.display='none'}
-function accionFav(){if(!favs.find(f=>f.ref===seleccionado.ref)){favs.push(seleccionado);localStorage.setItem('favMax',JSON.stringify(favs));alert('⭐ Guardado')}cerrarModal()}
+function accionFav(){if(!favs.find(f=>f.ref===seleccionado.ref)){favs.push(seleccionado);localStorage.setItem('favMax',JSON.stringify(favs));alert('⭐ Guardado en '+seleccionado.ref)}cerrarModal()}
 function accionResaltar(){if(resaltados.has(seleccionado.ref))resaltados.delete(seleccionado.ref);else resaltados.add(seleccionado.ref);localStorage.setItem('resMax',JSON.stringify([...resaltados]));cargarCap();cerrarModal()}
 function accionEscuchar(){hablarSuave(seleccionado.texto,seleccionado.ref);cerrarModal()}
-function accionCompartir(){window.open('https://wa.me/?text='+encodeURIComponent(seleccionado.ref+': '+seleccionado.texto),'_blank');cerrarModal()}
 function hablarSuave(texto,ref){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(ref+'. '+texto);u.lang='es-AR';u.rate=0.85;u.pitch=0.9;speechSynthesis.speak(u)}
 function leerVoz(){hablarSuave(document.getElementById('libro').innerText,'Capítulo')}
 function renderFav(){
   let c=document.getElementById('listaFav');
   if(favs.length===0){c.innerHTML='<p style="color:#888">No tenés favoritos.</p>';return}
-  c.innerHTML=favs.map((f,i)=>`<div class="card"><small>${f.ref}</small><p>"${f.texto}"</p><button onclick="irAVersiculo('${f.ref}')">📖 Ir al capítulo</button><button onclick="borrarFav(${i})" style="background:#a00;color:#fff">Borrar</button></div>`).join('');
+  c.innerHTML=favs.map((f,i)=>`<div class="card"><small>${f.ref}</small><p>"${f.texto}"</p><button onclick="irAVersiculo('${f.ref}')">📖 Ir a ${f.ref}</button><button onclick="borrarFav(${i})" style="background:#a00;color:#fff">Borrar</button></div>`).join('');
 }
 function borrarFav(i){favs.splice(i,1);localStorage.setItem('favMax',JSON.stringify(favs));renderFav()}
 
-// --- NUEVO: IR AL VERSÍCULO DESDE LA IA ---
 async function irAVersiculo(ref){
   let m=ref.match(/(.+?)\s*(\d+):(\d+)/);
   if(!m) return;
@@ -315,7 +298,6 @@ async function irAVersiculo(ref){
   cargarCaps();
   capSel.value=cap;
   await cargarCap();
-  // cambiar a pestaña Leer
   document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));
   document.querySelector('.menu button').classList.add('active');
   document.querySelectorAll('.seccion').forEach(s=>s.classList.remove('activa'));
@@ -331,7 +313,6 @@ async function irAVersiculo(ref){
   },600);
 }
 
-// --- IA CONTEXTUAL ---
 const TEMAS = {
   economia: {p:['plata','econom','deuda','trabajo','sueldo','pobre','falta','proveer','desempleo'], vers:['Filipenses 4:19','Mateo 6:33','Proverbios 3:9']},
   ansiedad: {p:['ansied','nervio','preocup','estres','angust','miedo','temor','panico','inquiet'], vers:['Filipenses 4:6','1 Pedro 5:7','Isaías 41:10']},
@@ -413,8 +394,7 @@ function agregarChat(quien, texto, versiculos){
     versiculos.forEach(v=>{
       let card=document.createElement('div');
       card.className='msg ia';
-      // NOMBRE DEL LIBRO + TOCAR PARA IR
-      card.innerHTML=`<span class="toca" onclick="irAVersiculo('${v.ref}')">${v.ref} 👉 tocame para ir al libro</span><br>"${v.texto}"<br><button style="margin-top:6px;padding:8px;border-radius:8px;border:none;background:#f5d76e;width:100%" onclick="hablarSuave('${v.texto.replace(/'/g,"")}','${v.ref}')">🔊 Escuchar</button>`;
+      card.innerHTML=`<span style="cursor:pointer;color:#f5d76e;font-weight:800" onclick="irAVersiculo('${v.ref}')">${v.ref} 👉 tocame para ir al libro</span><br>"${v.texto}"<br><button style="margin-top:6px;padding:8px;border-radius:8px;border:none;background:#f5d76e;width:100%" onclick="hablarSuave('${v.texto.replace(/'/g,"")}','${v.ref}')">🔊 Escuchar</button>`;
       chat.appendChild(card);
     });
   }
