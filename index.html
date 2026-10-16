@@ -34,14 +34,15 @@ button.grande{width:100%;margin-top:10px;padding:14px;border-radius:10px;border:
 .card small{color:#f5d76e;font-weight:800}
 .card p{margin-top:6px;line-height:1.6}
 .card button{margin-top:8px;padding:10px;border-radius:99px;border:none;background:#f5d76e;font-weight:700;width:100%;cursor:pointer}
+.card button.verde{background:#2e7d32;color:#fff}
 .chat{max-height:320px;overflow-y:auto;background:#111;border-radius:12px;padding:10px;margin-top:10px;border:1px solid #333}
 .msg{padding:10px;border-radius:12px;margin-bottom:8px;line-height:1.5}
 .msg.user{background:#2a2a2a;text-align:right}
 .msg.ia{background:#3a3320;border-left:3px solid #f5d76e}
+.msg.ia.toca{cursor:pointer;border-bottom:1px dashed #f5d76e;color:#f5d76e;font-weight:800}
 #modal{position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;border-top:2px solid #f5d76e;padding:16px;display:none;z-index:20;max-width:720px;margin:0 auto}
 #modal button{display:block;width:100%;margin-top:8px;padding:12px;border-radius:10px;border:none;background:#f5d76e;font-weight:800;cursor:pointer}
 #modal button.sec{background:#333;color:#fff}
-audio{width:100%;margin-top:12px}
 </style>
 </head>
 <body>
@@ -56,7 +57,7 @@ audio{width:100%;margin-top:12px}
 
 <div id="sec-leer" class="seccion activa">
 <div id="descargaBox">
-<b id="estadoDescarga">📥 Descargar TODA la Biblia de una vez (1 archivo, ~10 seg)</b>
+<b id="estadoDescarga">📥 Descargar TODA la Biblia de una vez</b>
 <p style="font-size:13px;margin-top:6px;color:#ccc">Después anda sin internet. Sin clave.</p>
 <button onclick="descargarBiblia()">DESCARGAR BIBLIA COMPLETA</button>
 <div id="barra"><div id="barraLlena"></div></div>
@@ -68,14 +69,18 @@ audio{width:100%;margin-top:12px}
 <input id="buscarPalabra" placeholder="Buscar palabra en toda la Biblia: paz, amor...">
 <button class="grande" style="background:#333;color:#f5d76e" onclick="buscarPalabra()">BUSCAR PALABRA</button>
 
-<select id="libroSel" onchange="cargarCap()"></select>
-<select id="capSel" onchange="cargarCap()"></select>
+<!-- ACÁ ESTÁN LOS NOMBRES -->
+<label style="color:#f5d76e;font-size:13px;margin-top:10px;display:block">LIBRO</label>
+<select id="libroSel"></select>
+<label style="color:#f5d76e;font-size:13px;margin-top:10px;display:block">CAPÍTULO</label>
+<select id="capSel"></select>
+
 <div id="libro" style="margin-top:12px"><p style="text-align:center;color:#888;padding:20px">Tocá DESCARGAR BIBLIA COMPLETA</p></div>
 </div>
 
 <div id="sec-ia" class="seccion">
 <div class="card">
-<small>🤖 IA CONTEXTUAL - Busca en tu Biblia descargada</small>
+<small>🤖 IA CONTEXTUAL - Tocá el versículo para ir al libro</small>
 <div id="chatIA" class="chat"><div class="msg ia">Hola, contame cómo estás. Te busco versículos de verdad.</div></div>
 <textarea id="consultaIA" rows="2" placeholder="Ej: no duermo, tengo miedo..."></textarea>
 <button class="grande" onclick="pedirIA()">ENVIAR</button>
@@ -99,8 +104,8 @@ audio{width:100%;margin-top:12px}
 </div>
 
 <script>
-let estructuraLibros=[]; // [{nombre, caps:[1..150]}]
-let todosLosVersiculos=[]; // [{book, chapter, verse, texto, ref}]
+let estructuraLibros=[];
+let todosLosVersiculos=[];
 let currentVerses=[], seleccionado=null, tamLetra=18;
 let favs=JSON.parse(localStorage.getItem('favMax')||'[]');
 let resaltados=new Set(JSON.parse(localStorage.getItem('resMax')||'[]'));
@@ -125,9 +130,8 @@ function mostrar(v){
 function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open('bibliaMaxDB',1);r.onupgradeneeded=e=>{e.target.result.createObjectStore('verses',{keyPath:'id'})};r.onsuccess=e=>res(e.target.result);r.onerror=()=>rej()})}
 async function guardarLote(lote){const db=await openDB();return new Promise((res,rej)=>{const tx=db.transaction('verses','readwrite');const st=tx.objectStore('verses');lote.forEach(v=>st.put(v));tx.oncomplete=res;tx.onerror=()=>rej()})}
 async function borrarDB(){const db=await openDB();return new Promise(res=>{const tx=db.transaction('verses','readwrite');tx.objectStore('verses').clear();tx.oncomplete=res})}
-
-// LIMPIAR TEXTO
 function limpiar(t){return (t||'').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim()}
+function norm(s){return (s||'').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 
 function normalizarLibros(json){
   let raw = json.books || json.data?.books || json.data || json;
@@ -155,7 +159,6 @@ function normalizarLibros(json){
   return libros;
 }
 
-// DESCARGA ÚNICA Y RÁPIDA
 async function descargarBiblia(){
   let barra=document.getElementById('barraLlena'), prog=document.getElementById('progreso');
   prog.textContent='Descargando archivo completo...';
@@ -169,7 +172,6 @@ async function descargarBiblia(){
     let json=await resp.json();
     estructuraLibros=normalizarLibros(json);
     if(estructuraLibros.length===0) throw new Error('formato');
-
     await borrarDB();
     todosLosVersiculos=[];
     let lote=[];
@@ -191,12 +193,12 @@ async function descargarBiblia(){
     }
     if(lote.length) await guardarLote(lote);
     localStorage.setItem('bibliaMaxOK','1');
-    prog.textContent='✅ LISTO! Biblia completa guardada. Ya funciona sin internet.';
+    prog.textContent='✅ LISTO! Biblia completa guardada.';
     barra.style.width='100%';
     document.getElementById('estadoDescarga').textContent='✅ Biblia completa descargada';
     llenarSelectores(); cargarCap();
   }catch(e){
-    prog.textContent='❌ Error al descargar. Tocá de nuevo. Revisá internet.';
+    prog.textContent='❌ Error. Tocá de nuevo.';
     console.error(e);
   }
 }
@@ -208,7 +210,6 @@ async function cargarDesdeDB(){
     let data=await new Promise(res=>{req.onsuccess=()=>res(req.result)});
     if(data && data.length>1000){
       todosLosVersiculos=data;
-      // reconstruir estructura
       let mapa={};
       data.forEach(v=>{ if(!mapa[v.book]) mapa[v.book]={nombre:v.book, capsSet:new Set()}; mapa[v.book].capsSet.add(v.chapter); });
       estructuraLibros=Object.values(mapa).map(m=>({nombre:m.nombre, caps:[...m.capsSet].sort((a,b)=>a-b).map(c=>({cap:c}))}));
@@ -240,7 +241,9 @@ async function cargarCap(){
   if(todosLosVersiculos.length===0){
     document.getElementById('libro').innerHTML='<p style="text-align:center;color:#f5d76e;padding:20px">Tocá DESCARGAR BIBLIA COMPLETA arriba.</p>';return;
   }
-  let idx=+libroSel.value; let nombre=estructuraLibros[idx].nombre;
+  let idx=+libroSel.value;
+  if(!estructuraLibros[idx]) return;
+  let nombre=estructuraLibros[idx].nombre;
   let cap=+capSel.value;
   let vers=todosLosVersiculos.filter(v=>v.book===nombre && v.chapter===cap).sort((a,b)=>a.verse-b.verse);
   currentVerses=vers;
@@ -264,8 +267,8 @@ function cambiarCap(d){
 function buscarCita(){
   let raw=document.getElementById('buscarInput').value.trim(); if(!raw) return;
   let m=raw.match(/(.+?)\s*(\d+):(\d+)/); if(!m){alert('Formato: Juan 3:16');return}
-  let libroTxt=m[1].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-  let idx=estructuraLibros.findIndex(l=>l.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(libroTxt));
+  let libroTxt=norm(m[1]);
+  let idx=estructuraLibros.findIndex(l=>norm(l.nombre).includes(libroTxt));
   if(idx<0){alert('Libro no encontrado');return}
   libroSel.value=idx; cargarCaps(); capSel.value=m[2]; cargarCap();
   setTimeout(()=>{document.querySelectorAll('.num').forEach(n=>{if(n.textContent===m[3]){n.parentElement.style.background='#3a3320';n.parentElement.scrollIntoView({behavior:'smooth',block:'center'})}})},700);
@@ -275,7 +278,7 @@ function buscarPalabra(){
   if(!palabra) return;
   let res=todosLosVersiculos.filter(v=>v.texto.toLowerCase().includes(palabra)).slice(0,20);
   let html=`<div class="titulo-libro">Resultados para "${palabra}" (${res.length})</div>`;
-  res.forEach(v=>{html+=`<div class="card"><small>${v.ref}</small><p>"${v.texto}"</p><button onclick="hablarSuave('${v.texto.replace(/'/g,"")}','${v.ref}')">🔊 Escuchar</button></div>`});
+  res.forEach(v=>{html+=`<div class="card"><small>${v.ref}</small><p>"${v.texto}"</p><button onclick="irAVersiculo('${v.ref}')">📖 Leer capítulo completo</button></div>`});
   document.getElementById('libro').innerHTML=html;
 }
 
@@ -295,11 +298,40 @@ function leerVoz(){hablarSuave(document.getElementById('libro').innerText,'Capí
 function renderFav(){
   let c=document.getElementById('listaFav');
   if(favs.length===0){c.innerHTML='<p style="color:#888">No tenés favoritos.</p>';return}
-  c.innerHTML=favs.map((f,i)=>`<div class="card"><small>${f.ref}</small><p>"${f.texto}"</p><button onclick="borrarFav(${i})" style="background:#a00;color:#fff">Borrar</button></div>`).join('');
+  c.innerHTML=favs.map((f,i)=>`<div class="card"><small>${f.ref}</small><p>"${f.texto}"</p><button onclick="irAVersiculo('${f.ref}')">📖 Ir al capítulo</button><button onclick="borrarFav(${i})" style="background:#a00;color:#fff">Borrar</button></div>`).join('');
 }
 function borrarFav(i){favs.splice(i,1);localStorage.setItem('favMax',JSON.stringify(favs));renderFav()}
 
-// --- IA CONTEXTUAL QUE SIEMPRE MANDA VERSICULOS ---
+// --- NUEVO: IR AL VERSÍCULO DESDE LA IA ---
+async function irAVersiculo(ref){
+  let m=ref.match(/(.+?)\s*(\d+):(\d+)/);
+  if(!m) return;
+  let libroTxt=norm(m[1]);
+  let cap=m[2], ver=m[3];
+  let idx=estructuraLibros.findIndex(l=>norm(l.nombre)===libroTxt);
+  if(idx<0) idx=estructuraLibros.findIndex(l=>norm(l.nombre).includes(libroTxt));
+  if(idx<0){alert('No encontré '+m[1]);return}
+  libroSel.value=idx;
+  cargarCaps();
+  capSel.value=cap;
+  await cargarCap();
+  // cambiar a pestaña Leer
+  document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.menu button').classList.add('active');
+  document.querySelectorAll('.seccion').forEach(s=>s.classList.remove('activa'));
+  document.getElementById('sec-leer').classList.add('activa');
+  setTimeout(()=>{
+    document.querySelectorAll('.num').forEach(n=>{
+      if(n.textContent===ver){
+        n.parentElement.style.background='#f5d76e';
+        n.parentElement.style.color='#000';
+        n.parentElement.scrollIntoView({behavior:'smooth',block:'center'});
+      }
+    });
+  },600);
+}
+
+// --- IA CONTEXTUAL ---
 const TEMAS = {
   economia: {p:['plata','econom','deuda','trabajo','sueldo','pobre','falta','proveer','desempleo'], vers:['Filipenses 4:19','Mateo 6:33','Proverbios 3:9']},
   ansiedad: {p:['ansied','nervio','preocup','estres','angust','miedo','temor','panico','inquiet'], vers:['Filipenses 4:6','1 Pedro 5:7','Isaías 41:10']},
@@ -311,7 +343,6 @@ const TEMAS = {
   amor: {p:['amor','soledad','pareja','novia','novio'], vers:['Juan 3:16','1 Corintios 13:4','Romanos 8:38']}
 };
 
-function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
 function detectarTemas(texto){
   let t=norm(texto);
   let encontrados=[];
@@ -320,7 +351,6 @@ function detectarTemas(texto){
     TEMAS[k].p.forEach(p=>{if(t.includes(p)) score+=2});
     if(score>0) encontrados.push({tema:k,score});
   }
-  // CONTEXTO: mira lo anterior
   historial.slice(-3).forEach(h=>{
     let ht=norm(h);
     for(let k in TEMAS){
@@ -361,7 +391,6 @@ function pedirIA(){
     if(v &&!seleccion.find(s=>s.ref===v.ref)) seleccion.push(v);
     if(seleccion.length>=3) break;
   }
-  // SI NO ENCONTRÓ POR REF, BUSCA POR PALABRAS DEL TEMA (garantiza que siempre manda algo)
   if(seleccion.length<3 && temas.length>0){
     let palabras=TEMAS[temas[0]].p;
     for(let v of todosLosVersiculos){
@@ -384,7 +413,8 @@ function agregarChat(quien, texto, versiculos){
     versiculos.forEach(v=>{
       let card=document.createElement('div');
       card.className='msg ia';
-      card.innerHTML=`<b>${v.ref}</b><br>"${v.texto}"<br><button style="margin-top:6px;padding:8px;border-radius:8px;border:none;background:#f5d76e;width:100%" onclick="hablarSuave('${v.texto.replace(/'/g,"")}','${v.ref}')">🔊 Escuchar</button>`;
+      // NOMBRE DEL LIBRO + TOCAR PARA IR
+      card.innerHTML=`<span class="toca" onclick="irAVersiculo('${v.ref}')">${v.ref} 👉 tocame para ir al libro</span><br>"${v.texto}"<br><button style="margin-top:6px;padding:8px;border-radius:8px;border:none;background:#f5d76e;width:100%" onclick="hablarSuave('${v.texto.replace(/'/g,"")}','${v.ref}')">🔊 Escuchar</button>`;
       chat.appendChild(card);
     });
   }
