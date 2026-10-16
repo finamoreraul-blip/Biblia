@@ -3,71 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Biblia Pro - Completa</title>
+<title>Biblia PRO Final</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0b0b0b;color:#e8e0c9;font-family:Georgia,serif}
 header{position:sticky;top:0;background:#111;border-bottom:1px solid #2a2a2a;padding:12px;z-index:10;text-align:center}
-header h1{color:#f5d76e;font-size:18px}
-.topbar{display:flex;gap:6px;justify-content:center;margin-top:8px}
-.topbar button{padding:7px 12px;border-radius:20px;border:1px solid #444;background:#1a1a1a;color:#e8e0c9;font-size:12px;cursor:pointer}
-.topbar button.active{background:#f5d76e;color:#111;font-weight:800}
-.buscar{display:flex;gap:8px;padding:12px;background:#111}
-.buscar input{flex:1;padding:12px;border-radius:10px;border:1px solid #333;background:#1e1e1e;color:#fff}
-.buscar button{padding:12px 16px;border-radius:10px;border:none;background:#f5d76e;font-weight:800}
-select{width:100%;margin:6px 0;padding:11px;border-radius:10px;background:#1e1e1e;color:#e8e0c9;border:1px solid #333}
-#libro{max-width:700px;margin:0 auto;padding:20px 18px 80px;background:#121210;min-height:100vh}
-.titulo-libro{text-align:center;color:#f5d76e;font-size:22px;border-bottom:1px solid #333;padding-bottom:10px;margin-bottom:14px}
+header h1{color:#f5d76e;font-size:19px}
+.menu{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.menu button{padding:9px 14px;border-radius:20px;border:1px solid #444;background:#1a1a1a;color:#fff;font-size:13px;cursor:pointer}
+.menu button.active{background:#f5d76e;color:#111;font-weight:800;border-color:#f5d76e}
+.seccion{display:none;max-width:700px;margin:0 auto;padding:14px}
+.seccion.activa{display:block}
+#libro{background:#121210;border-radius:16px;padding:18px;min-height:60vh}
+.titulo-libro{text-align:center;color:#f5d76e;font-size:22px;border-bottom:1px solid #333;padding-bottom:10px;margin-bottom:12px}
 .cap-num{font-size:46px;float:left;line-height:.9;margin:6px 10px 2px 0;color:#f5d76e;font-weight:800}
 .texto{font-size:18px;line-height:2;text-align:justify}
-.vers{cursor:pointer;border-radius:6px;padding:1px 2px}
+.vers{cursor:pointer;border-radius:6px;padding:2px}
 .vers:hover{background:#222}
 .num{font-size:11px;color:#f5d76e;font-weight:800;vertical-align:super}
-.resaltado{background:#4a3f15!important}
-.nav{display:flex;gap:8px;margin-top:24px}
-.nav button{flex:1;padding:13px;border-radius:99px;border:1px solid #f5d76e;background:transparent;color:#f5d76e;font-weight:800}
-#panelFav{background:#111;border-top:1px solid #333;padding:14px;max-width:700px;margin:0 auto}
-.fav-item{background:#1c1c1c;border:1px solid #333;border-radius:12px;padding:12px;margin-top:10px}
-.fav-item small{color:#f5d76e}
-#modal{position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;border-top:2px solid #f5d76e;padding:16px;display:none;z-index:20}
-#modal button{display:block;width:100%;margin-top:8px;padding:13px;border-radius:10px;border:none;background:#f5d76e;font-weight:800}
+.resaltado{background:#4a3f15}
+.nav{display:flex;gap:8px;margin-top:20px}
+.nav button{flex:1;padding:13px;border-radius:99px;border:1px solid #f5d76e;background:transparent;color:#f5d76e;font-weight:800;cursor:pointer}
+input,textarea,select{width:100%;padding:13px;border-radius:10px;border:1px solid #333;background:#1e1e1e;color:#fff;margin-top:8px;font-size:15px}
+button.grande{width:100%;margin-top:10px;padding:14px;border-radius:10px;border:none;background:#f5d76e;color:#111;font-weight:800;cursor:pointer}
+.card{background:#1c1c1c;border:1px solid #333;border-radius:14px;padding:14px;margin-top:12px}
+.card small{color:#f5d76e;font-weight:800}
+.card p{margin-top:6px;line-height:1.6}
+.card button{margin-top:8px;padding:10px;border-radius:99px;border:none;background:#f5d76e;font-weight:700;width:100%;cursor:pointer}
+#modal{position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;border-top:2px solid #f5d76e;padding:16px;display:none;z-index:20;max-width:700px;margin:0 auto}
+#modal button{display:block;width:100%;margin-top:8px;padding:12px;border-radius:10px;border:none;background:#f5d76e;font-weight:800;cursor:pointer}
 #modal button.sec{background:#333;color:#fff}
 </style>
 </head>
 <body>
 <header>
-<h1>📖 BIBLIA PRO - RVR 1960</h1>
-<div class="topbar">
-<button id="btnLeer" class="active" onclick="mostrar('leer')">📖 Leer</button>
-<button id="btnFav" onclick="mostrar('fav')">⭐ Favoritos (<span id="cantFav">0</span>)</button>
-<button onclick="cambiarLetra(1)">A+</button>
-<button onclick="cambiarLetra(-1)">A-</button>
-<button onclick="verDelDia()">✨ Del Día</button>
+<h1>📖 BIBLIA PRO FINAL</h1>
+<div class="menu">
+<button class="active" onclick="mostrar('leer')">📖 Leer</button>
+<button onclick="mostrar('ia')">🤖 IA</button>
+<button onclick="mostrar('fav')">⭐ Favoritos</button>
 </div>
 </header>
 
-<div class="buscar">
-<input id="buscarInput" placeholder="Buscar: Juan 3:16">
-<button onclick="buscar()">BUSCAR</button>
-</div>
-<div style="padding:0 12px;background:#111">
+<!-- LEER -->
+<div id="sec-leer" class="seccion activa">
+<input id="buscarInput" placeholder="Buscar cita: Juan 3:16">
+<button class="grande" onclick="buscarCita()">🔍 BUSCAR EN TODA LA BIBLIA</button>
 <select id="libroSel" onchange="cargarCaps()"></select>
 <select id="capSel" onchange="cargarCap()"></select>
+<div style="display:flex;gap:8px;margin-top:8px">
+<button style="flex:1;padding:10px;border-radius:10px;border:1px solid #444;background:#1a1a1a;color:#fff" onclick="cambiarLetra(1)">A+ Grande</button>
+<button style="flex:1;padding:10px;border-radius:10px;border:1px solid #444;background:#1a1a1a;color:#fff" onclick="cambiarLetra(-1)">A- Chica</button>
+<button style="flex:1;padding:10px;border-radius:10px;border:1px solid #444;background:#1a1a1a;color:#fff" onclick="verDelDia()">✨ Del Día</button>
+</div>
+<div id="libro" style="margin-top:12px"><p style="text-align:center;color:#888;padding:20px">Cargando...</p></div>
 </div>
 
-<div id="libro"><p style="text-align:center;color:#888;padding:30px">Cargando Biblia...</p></div>
+<!-- IA -->
+<div id="sec-ia" class="seccion">
+<div class="card">
+<small>🔑 TU CLAVE GEMINI (gratis, se guarda solo en tu celu)</small>
+<input id="iaKey" type="password" placeholder="Pegá tu clave AI Studio acá">
+<small style="margin-top:6px;display:block">¿No tenés? Andá aistudio.google.com/apikey - 1 minuto y es gratis</small>
+</div>
+<div class="card">
+<small>🤖 CONTAME CÓMO ESTÁS</small>
+<textarea id="consultaIA" rows="3" placeholder="Ej: estoy con problemas económicos, no sé qué hacer..."></textarea>
+<button class="grande" onclick="pedirIA()">PEDIR A LA IA</button>
+<div id="resultadoIA"></div>
+</div>
+</div>
 
-<div id="panelFav" style="display:none">
-<h2 style="color:#f5d76e">⭐ Mis Favoritos y Notas</h2>
+<!-- FAV -->
+<div id="sec-fav" class="seccion">
+<h2 style="color:#f5d76e;margin-bottom:10px">⭐ Mis Favoritos y Resaltados</h2>
 <div id="listaFav"></div>
 </div>
 
 <div id="modal">
 <h3 id="modalRef" style="color:#f5d76e"></h3>
-<p id="modalTexto" style="margin-top:8px;font-size:15px;line-height:1.6"></p>
+<p id="modalTexto" style="margin-top:8px;line-height:1.6"></p>
 <button onclick="accionFav()">⭐ Guardar en Favoritos</button>
-<button class="sec" onclick="accionResaltar()">🖍 Resaltar</button>
-<button class="sec" onclick="accionNota()">📝 Agregar Nota</button>
+<button class="sec" onclick="accionResaltar()">🖍 Resaltar / Quitar</button>
 <button class="sec" onclick="accionEscuchar()">🔊 Escuchar</button>
 <button class="sec" onclick="accionCompartir()">💬 Compartir</button>
 <button class="sec" style="background:#a00;color:#fff" onclick="cerrarModal()">Cerrar</button>
@@ -90,22 +107,51 @@ const LIBROS = [
 ["1 Pedro","1PE",5],["2 Pedro","2PE",5],["1 Juan","1JN",5],["2 Juan","2JN",1],["3 Juan","3JN",1],
 ["Judas","JUD",1],["Apocalipsis","REV",22]
 ];
+const VERS_LOCAL = [
+{ref:"Filipenses 4:19",texto:"Y mi Dios suplirá todo lo que os falta conforme a sus riquezas en gloria en Cristo Jesús.",tema:"ECONOMIA"},
+{ref:"Mateo 6:33",texto:"Mas buscad primeramente el reino de Dios y su justicia, y todas estas cosas os serán añadidas.",tema:"ECONOMIA"},
+{ref:"Salmos 23:1",texto:"Jehová es mi pastor; nada me faltará.",tema:"PAZ"},
+{ref:"Juan 3:16",texto:"Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna.",tema:"AMOR"},
+{ref:"Filipenses 4:6-7",texto:"Por nada estéis afanosos, sino sean conocidas vuestras peticiones delante de Dios en toda oración y ruego, con acción de gracias.",tema:"ANSIEDAD"},
+{ref:"Salmos 34:18",texto:"Cercano está Jehová a los quebrantados de corazón, y salva a los contritos de espíritu.",tema:"TRISTEZA"},
+{ref:"Isaías 41:10",texto:"No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios que te esfuerzo.",tema:"MIEDO"},
+{ref:"Proverbios 3:5",texto:"Fíate de Jehová de todo tu corazón, y no te apoyes en tu propia prudencia.",tema:"CONFIANZA"},
+{ref:"Jeremías 29:11",texto:"Porque yo sé los pensamientos que tengo acerca de vosotros, dice Jehová, pensamientos de paz, y no de mal, para daros el fin que esperáis.",tema:"ESPERANZA"}
+];
+
 let libroSel=document.getElementById('libroSel'), capSel=document.getElementById('capSel');
-let favs=JSON.parse(localStorage.getItem('favPro')||'[]');
-let resaltados=new Set(JSON.parse(localStorage.getItem('resPro')||'[]'));
-let notas=JSON.parse(localStorage.getItem('notasPro')||'{}');
+let favs=JSON.parse(localStorage.getItem('favFinal')||'[]');
+let resaltados=new Set(JSON.parse(localStorage.getItem('resFinal')||'[]'));
+let currentVerses=[];
 let seleccionado=null;
 let tamLetra=18;
+let iaKeyInput=document.getElementById('iaKey');
+iaKeyInput.value=localStorage.getItem('miGeminiKey')||'';
+iaKeyInput.addEventListener('change',e=>localStorage.setItem('miGeminiKey',e.target.value.trim()));
 
 LIBROS.forEach((l,i)=>{let o=document.createElement('option');o.value=i;o.textContent=l[0];libroSel.appendChild(o)});
-cargarCaps(); actualizarCantFav();
+cargarCaps();
 
-function cargarCaps(){
+document.getElementById('libro').addEventListener('click',e=>{
+  let el=e.target.closest('.vers');
+  if(el){abrirModal(+el.dataset.i)}
+});
+
+function mostrar(v){
+  document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.seccion').forEach(s=>s.classList.remove('activa'));
+  document.getElementById('sec-'+v).classList.add('activa');
+  if(v==='fav') renderFav();
+}
+
+async function cargarCaps(){
   let total=LIBROS[libroSel.value][2];
   capSel.innerHTML='';
   for(let c=1;c<=total;c++){let o=document.createElement('option');o.value=c;o.textContent='Capítulo '+c;capSel.appendChild(o)}
-  cargarCap();
+  await cargarCap();
 }
+
 async function cargarCap(){
   let idx=+libroSel.value, cap=+capSel.value;
   let [nombre,codigo]=[LIBROS[idx][0],LIBROS[idx][1]];
@@ -113,87 +159,117 @@ async function cargarCap(){
   cont.innerHTML='<p style="text-align:center;color:#888;padding:20px">Abriendo '+nombre+' '+cap+'...</p>';
   try{
     let r=await fetch(`https://bolls.life/get-text/${codigo}/${cap}/?translation=rvr1960`);
+    if(!r.ok) throw new Error('api');
     let data=await r.json();
+    currentVerses=data.map(v=>({num:v.verse, ref:`${nombre} ${cap}:${v.verse}`, texto:(v.text||'').replace(/<[^>]*>/g,'')}));
     let html=`<div class="titulo-libro">${nombre} ${cap}</div><div class="texto" style="font-size:${tamLetra}px"><span class="cap-num">${cap}</span>`;
-    data.forEach(v=>{
-      let ref=`${nombre} ${cap}:${v.verse}`;
-      let txt=v.text?v.text.replace(/<[^>]*>/g,''):'';
-      let isRes=resaltados.has(ref)?' resaltado':'';
-      html+=`<span class="vers${isRes}" data-ref="${ref}" data-texto="${txt.replace(/"/g,"'")}" onclick="abrirModal(this)"><span class="num">${v.verse}</span> ${txt} </span>`;
+    currentVerses.forEach((v,i)=>{
+      let isRes=resaltados.has(v.ref)?' resaltado':'';
+      html+=`<span class="vers${isRes}" data-i="${i}"><span class="num">${v.num}</span> ${v.texto} </span>`;
     });
     html+=`</div><div class="nav"><button onclick="cambiarCap(-1)">← Anterior</button><button onclick="leerCapitulo()">🔊 Escuchar</button><button onclick="cambiarCap(1)">Siguiente →</button></div>`;
     cont.innerHTML=html;
-  }catch(e){cont.innerHTML='<p style="text-align:center;color:#888;padding:20px">Error de internet</p>'}
+  }catch(e){
+    cont.innerHTML='<p style="text-align:center;color:#f5d76e;padding:20px">No cargó internet.<br>Revisá tu conexión y tocá de nuevo el capítulo.</p>';
+  }
+}
+
 function cambiarCap(d){
   let idx=+libroSel.value, cap=+capSel.value, total=LIBROS[idx][2];
   let nuevo=cap+d;
-  if(nuevo<1){ if(idx>0){libroSel.value=idx-1;cargarCaps();capSel.value=LIBROS[idx-1][2];} return; }
-  if(nuevo>total){ if(idx<LIBROS.length-1){libroSel.value=idx+1;cargarCaps();capSel.value=1;} return; }
+  if(nuevo<1){ if(idx>0){libroSel.value=idx-1;cargarCaps().then(()=>{capSel.value=LIBROS[idx-1][2];cargarCap()});} return; }
+  if(nuevo>total){ if(idx<LIBROS.length-1){libroSel.value=idx+1;cargarCaps().then(()=>{capSel.value=1;cargarCap()});} return; }
   capSel.value=nuevo; cargarCap();
 }
-function abrirModal(el){
-  seleccionado={ref:el.dataset.ref, texto:el.dataset.texto};
+
+async function buscarCita(){
+  let raw=document.getElementById('buscarInput').value.trim(); if(!raw){alert('Escribí una cita');return}
+  let m=raw.match(/(.+?)\s*(\d+):(\d+)/);
+  if(!m){alert('Formato: Juan 3:16');return}
+  let libroTxt=m[1].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  let idx=LIBROS.findIndex(l=>l[0].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(libroTxt));
+  if(idx<0){alert('Libro no encontrado');return}
+  libroSel.value=idx; await cargarCaps(); capSel.value=m[2]; await cargarCap();
+  setTimeout(()=>{
+    document.querySelectorAll('.num').forEach(n=>{if(n.textContent===m[3]){n.parentElement.style.background='#3a3320';n.parentElement.scrollIntoView({behavior:'smooth',block:'center'})}});
+  },700);
+}
+
+function abrirModal(i){
+  seleccionado=currentVerses[i];
   document.getElementById('modalRef').textContent=seleccionado.ref;
   document.getElementById('modalTexto').textContent='"'+seleccionado.texto+'"';
   document.getElementById('modal').style.display='block';
 }
 function cerrarModal(){document.getElementById('modal').style.display='none'}
 function accionFav(){
-  if(!favs.find(f=>f.ref===seleccionado.ref)){favs.push({...seleccionado, nota:notas[seleccionado.ref]||''});localStorage.setItem('favPro',JSON.stringify(favs));actualizarCantFav();alert('Guardado en favoritos');}
+  if(!favs.find(f=>f.ref===seleccionado.ref)){favs.push(seleccionado);localStorage.setItem('favFinal',JSON.stringify(favs));alert('⭐ Guardado en Favoritos')}
   cerrarModal();
 }
 function accionResaltar(){
   if(resaltados.has(seleccionado.ref)) resaltados.delete(seleccionado.ref); else resaltados.add(seleccionado.ref);
-  localStorage.setItem('resPro',JSON.stringify([...resaltados]));
+  localStorage.setItem('resFinal',JSON.stringify([...resaltados]));
   cargarCap(); cerrarModal();
 }
-function accionNota(){
-  let n=prompt('Tu nota para '+seleccionado.ref, notas[seleccionado.ref]||'');
-  if(n!==null){notas[seleccionado.ref]=n;localStorage.setItem('notasPro',JSON.stringify(notas));}
-  cerrarModal();
-}
 function accionEscuchar(){
-  speechSynthesis.cancel();
-  let u=new SpeechSynthesisUtterance(seleccionado.ref+'. '+seleccionado.texto); u.lang='es-AR'; u.rate=0.85; u.pitch=0.9; speechSynthesis.speak(u);
-  cerrarModal();
+  hablarSuave(seleccionado.texto, seleccionado.ref); cerrarModal();
 }
 function accionCompartir(){
   window.open('https://wa.me/?text='+encodeURIComponent(seleccionado.ref+': '+seleccionado.texto),'_blank'); cerrarModal();
 }
-function actualizarCantFav(){document.getElementById('cantFav').textContent=favs.length}
-function mostrar(v){
-  document.getElementById('btnLeer').classList.toggle('active',v==='leer');
-  document.getElementById('btnFav').classList.toggle('active',v==='fav');
-  document.getElementById('libro').style.display=v==='leer'?'block':'none';
-  document.getElementById('panelFav').style.display=v==='fav'?'block':'none';
-  if(v==='fav') renderFav();
-}
-function renderFav(){
-  let c=document.getElementById('listaFav');
-  if(favs.length===0){c.innerHTML='<p style="color:#888;margin-top:10px">No tenés favoritos. Tocá un versículo y guardalo.</p>';return}
-  c.innerHTML=favs.map((f,i)=>`<div class="fav-item"><small>${f.ref}</small><p>"${f.texto}"</p>${f.nota?`<p style="color:#f5d76e;font-size:13px;margin-top:6px">📝 ${f.nota}</p>`:''}<button style="margin-top:8px;padding:8px 12px;border-radius:8px;border:none;background:#a00;color:#fff" onclick="borrarFav(${i})">Borrar</button></div>`).join('');
-}
-function borrarFav(i){favs.splice(i,1);localStorage.setItem('favPro',JSON.stringify(favs));actualizarCantFav();renderFav()}
-function cambiarLetra(d){tamLetra=Math.min(24,Math.max(14,tamLetra+d));cargarCap()}
-async function buscar(){
-  let raw=document.getElementById('buscarInput').value.trim(); if(!raw) return;
-  let m=raw.match(/(.+?)\s*(\d+):(\d+)/); if(!m){alert('Usá formato: Juan 3:16');return}
-  let libroTxt=m[1].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-  let idx=LIBROS.findIndex(l=>l[0].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(libroTxt));
-  if(idx<0){alert('Libro no encontrado');return}
-  libroSel.value=idx; cargarCaps(); capSel.value=m[2]; await cargarCap();
-  setTimeout(()=>{document.querySelectorAll('.num').forEach(n=>{if(n.textContent===m[3]){n.parentElement.style.background='#3a3320';n.parentElement.scrollIntoView({behavior:'smooth',block:'center'})}})},700);
-}
-function verDelDia(){
-  let opciones=["Juan 3:16|Porque de tal manera amó Dios al mundo, que ha dado a su Hijo unigénito, para que todo aquel que en él cree, no se pierda, mas tenga vida eterna.","Salmos 23:1|Jehová es mi pastor; nada me faltará.","Filipenses 4:13|Todo lo puedo en Cristo que me fortalece.","Proverbios 3:5|Fíate de Jehová de todo tu corazón, y no te apoyes en tu propia prudencia."];
-  let e=opciones[new Date().getDate()%opciones.length].split('|');
-  alert('✨ Versículo del día\n'+e[0]+'\n"'+e[1]+'"');
+function hablarSuave(texto, ref){
+  speechSynthesis.cancel();
+  let u=new SpeechSynthesisUtterance(ref+'. '+texto); u.lang='es-AR'; u.rate=0.85; u.pitch=0.9; speechSynthesis.speak(u);
 }
 function leerCapitulo(){
   let t=document.getElementById('libro').innerText;
   speechSynthesis.cancel();
   let u=new SpeechSynthesisUtterance(t); u.lang='es-AR'; u.rate=0.9; u.pitch=0.9; speechSynthesis.speak(u);
 }
+function cambiarLetra(d){tamLetra=Math.min(24,Math.max(14,tamLetra+d));cargarCap()}
+function renderFav(){
+  let c=document.getElementById('listaFav');
+  if(favs.length===0){c.innerHTML='<p style="color:#888">No tenés favoritos todavía. Tocá un versículo y guardalo.</p>';return}
+  c.innerHTML=favs.map((f,i)=>`<div class="card"><small>${f.ref}</small><p>"${f.texto}"</p><button onclick="borrarFav(${i})" style="background:#a00;color:#fff">Borrar</button><button onclick="hablarSuave('${f.texto.replace(/'/g,"")}','${f.ref}')">🔊 Escuchar</button></div>`).join('');
+}
+function borrarFav(i){favs.splice(i,1);localStorage.setItem('favFinal',JSON.stringify(favs));renderFav()}
+
+async function pedirIA(){
+  let consulta=document.getElementById('consultaIA').value.trim();
+  let key=iaKeyInput.value.trim();
+  let out=document.getElementById('resultadoIA');
+  if(!consulta){alert('Escribime cómo te sentís');return}
+  out.innerHTML='<p style="color:#f5d76e;margin-top:10px">🤖 Pensando...</p>';
+  let prompt=`Actúa como pastor. Persona dice: "${consulta}". Recomienda 3 versículos Reina Valera. Devuelve SOLO JSON array: [{"ref":"Juan 3:16","texto":"...","tema":"ESPERANZA"}]`;
+  if(!key){
+    out.innerHTML='<p style="color:#f5d76e;margin-top:10px">Modo offline (sin clave):</p>'+iaLocal(consulta);
+    return;
+  }
+  try{
+    let r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+    });
+    if(!r.ok) throw new Error('key mala');
+    let data=await r.json();
+    let texto=data?.candidates?.[0]?.content?.parts?.[0]?.text||'[]';
+    texto=texto.replace(/```json/g,'').replace(/```/g,'').trim();
+    let vers=JSON.parse(texto);
+    out.innerHTML=vers.map(v=>`<div class="card"><small>${v.tema}</small><p><b>${v.ref}</b>: "${v.texto}"</p><button onclick="hablarSuave('${v.texto.replace(/'/g,"")}','${v.ref}')">🔊 Escuchar</button></div>`).join('');
+  }catch(e){
+    out.innerHTML='<p style="color:#f5d76e;margin-top:10px">IA de Google no respondió (revisá la clave o internet). Te dejo esta selección:</p>'+iaLocal(consulta);
+  }
+}
+function iaLocal(consulta){
+  let c=consulta.toLowerCase();
+  let filtrados=VERS_LOCAL.filter(v=> c.includes('plata')||c.includes('econom')||c.includes('deuda')? v.tema==='ECONOMIA' : c.includes('miedo')||c.includes('temor')? v.tema==='MIEDO' : c.includes('triste')||c.includes('mal')? v.tema==='TRISTEZA' : c.includes('ansie')||c.includes('nerv')? v.tema==='ANSIEDAD' : true);
+  if(filtrados.length===0) filtrados=VERS_LOCAL.slice(0,3);
+  return filtrados.slice(0,3).map(v=>`<div class="card"><small>${v.tema}</small><p><b>${v.ref}</b>: "${v.texto}"</p><button onclick="hablarSuave('${v.texto.replace(/'/g,"")}','${v.ref}')">🔊 Escuchar</button></div>`).join('');
+}
+function verDelDia(){
+  let e=VERS_LOCAL[new Date().getDate()%VERS_LOCAL.length];
+  alert('✨ Versículo del día\n'+e.ref+'\n"'+e.texto+'"');
+}
 </script>
 </body>
-  </html>
+</html>
